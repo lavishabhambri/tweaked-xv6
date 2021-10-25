@@ -72,15 +72,15 @@ CFLAGS += -fno-pie -nopie
 endif
 
 # Macros for scheduler
-SCHED_MACRO = -D SCHEDULER = RR_SCHEDULE
+SCHED_MACRO = -D SCHEDULER=RR
 ifeq ($(SCHEDULER), FCFS)
-SCHED_MACRO = -D SCHEDULER = FCFS_SCHEDULE
+SCHED_MACRO = -D SCHEDULER=FCFS
 endif
 ifeq ($(SCHEDULER), PBS)
-SCHED_MACRO = -D SCHEDULER = PBS_SCHEDULE
+SCHED_MACRO = -D SCHEDULER=PBS
 endif
 ifeq ($(SCHEDULER), MLFQ)
-SCHED_MACRO = -D SCHEDULER = MLFQ_SCHEDULE
+SCHED_MACRO = -D SCHEDULER=MLFQ
 endif
 CFLAGS += $(SCHED_MACRO)
 
@@ -150,6 +150,7 @@ UPROGS=\
 	$U/_grind\
 	$U/_wc\
 	$U/_zombie\
+	$U/_time\
 
 fs.img: mkfs/mkfs README $(UPROGS)
 	mkfs/mkfs fs.img README $(UPROGS)

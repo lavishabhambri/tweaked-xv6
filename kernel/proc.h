@@ -1,8 +1,8 @@
 // Scheduling algorithms used by scheduler
-#define RR_SCHEDULE 0
-#define FCFS_SCHEDULE 1
-#define PBS_SCHEDULE 2
-#define MLFQ_SCHEDULE 3
+#define RR 0
+#define FCFS 1
+#define PBS 2
+#define MLFQ 3
 
 
 // Saved registers for kernel context switches.
@@ -113,7 +113,10 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 
+  // These are implemented for the waitx call
   int startTime;               // Start time of the process, i.e. no of clock interrupts that have happened
   int endTime;                 // End time of the process
   int runTime;                 // Run time of the process
+
+
 };

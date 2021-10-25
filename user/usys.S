@@ -105,3 +105,8 @@ uptime:
  li a7, SYS_uptime
  ecall
  ret
+.global waitx
+waitx:
+ li a7, SYS_waitx
+ ecall
+ ret
