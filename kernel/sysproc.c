@@ -6,6 +6,7 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+// #include "sysinfo.h"
 
 uint64
 sys_exit(void)
@@ -17,6 +18,31 @@ sys_exit(void)
   return 0;  // not reached
 }
 
+// uint64
+// sys_strace(void){
+//   int n;
+//   if(argint(0, &n) < 0)
+//     return -1;
+//   myproc() -> mask = n;
+//   return 0;
+// }
+
+uint64
+sys_strace(void)
+{
+  int straceMask;
+
+  int val = argint(0, &straceMask);
+  if (val < 0)
+    return -1;
+
+  struct proc *p = myproc();
+  p->mask = straceMask;
+
+  return 0;
+}
+
+
 uint64
 sys_getpid(void)
 {
@@ -26,6 +52,7 @@ sys_getpid(void)
 uint64
 sys_fork(void)
 {
+  // np->mask = p->mask;
   return fork();
 }
 

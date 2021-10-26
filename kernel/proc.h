@@ -119,4 +119,7 @@ struct proc {
   int runTime;                 // Run time of the process
 
 
+  // This is needed for the strace command
+  int mask;
+
 };
