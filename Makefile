@@ -84,11 +84,6 @@ SCHED_MACRO = -D SCHEDULER=MLFQ
 endif
 CFLAGS += $(SCHED_MACRO)
 
-# Set debug
-# ifeq ($(DEBUG), TRUE)
-# CFLAGS += -D DEBUG
-# endif
-
 LDFLAGS = -z max-page-size=4096
 
 $K/kernel: $(OBJS) $K/kernel.ld $U/initcode
@@ -150,8 +145,8 @@ UPROGS=\
 	$U/_grind\
 	$U/_wc\
 	$U/_zombie\
-	$U/_time\
 	$U/_strace\
+	$U/_time\
 	$U/_schedulertest\
 
 fs.img: mkfs/mkfs README $(UPROGS)

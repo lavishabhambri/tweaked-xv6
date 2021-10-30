@@ -92,6 +92,7 @@ allocpid() {
   acquire(&pid_lock);
   pid = nextpid;
   nextpid = nextpid + 1;
+  
   release(&pid_lock);
 
   return pid;
@@ -145,9 +146,6 @@ found:
   memset(&p->context, 0, sizeof(p->context));
   p->context.ra = (uint64)forkret;
   p->context.sp = p->kstack + PGSIZE;
-  p->runTime = 0;
-  p->endTime = 0;
-  p->startTime = ticks;
 
   return p;
 }
@@ -297,6 +295,8 @@ fork(void)
   }
   np->sz = p->sz;
 
+  np->mask = p->mask;  // strace sys call
+
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
 
@@ -317,9 +317,6 @@ fork(void)
 
   acquire(&wait_lock);
   np->parent = p;
-
-  np->mask = p->mask; // strace 
-
   release(&wait_lock);
 
   acquire(&np->lock);
@@ -354,7 +351,7 @@ exit(int status)
 
   if(p == initproc)
     panic("init exiting");
-  
+
   // While exiting set the endtime as the CPU cycle
   p->endTime = ticks;
 
@@ -384,7 +381,7 @@ exit(int status)
 
   p->xstate = status;
   p->state = ZOMBIE;
-  p->endTime = ticks;
+
   release(&wait_lock);
 
   // Jump into the scheduler, never to return.
@@ -448,37 +445,6 @@ wait(uint64 addr)
 //  - swtch to start running that process.
 //  - eventually that process transfers control
 //    via swtch back to the scheduler.
-// void
-// scheduler(void)
-// {
-//   struct proc *p;
-//   struct cpu *c = mycpu();
-  
-//   c->proc = 0;
-//   for(;;){
-//     // Avoid deadlock by ensuring that devices can interrupt.
-//     intr_on();
-
-//     for(p = proc; p < &proc[NPROC]; p++) {
-//       acquire(&p->lock);
-//       if(p->state == RUNNABLE) {
-//         // Switch to chosen process.  It is the process's job
-//         // to release its lock and then reacquire it
-//         // before jumping back to us.
-//         p->state = RUNNING;
-//         c->proc = p;
-//         swtch(&c->context, &p->context);
-
-//         // Process is done running for now.
-//         // It should have changed its p->state before coming back.
-//         c->proc = 0;
-//       }
-//       release(&p->lock);
-//     }
-//   }
-// }
-
-
 void
 scheduler(void)
 {

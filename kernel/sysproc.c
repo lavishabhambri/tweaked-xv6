@@ -6,65 +6,32 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
-// #include "sysinfo.h"
-
-uint64
-sys_exit(void)
-{
-  int n;
-  if(argint(0, &n) < 0)
-    return -1;
-  exit(n);
-  return 0;  // not reached
-}
 
 // uint64
 // sys_strace(void){
 //   int n;
 //   if(argint(0, &n) < 0)
 //     return -1;
-//   myproc() -> mask = n;
+//   myproc()->mask = n;
 //   return 0;
 // }
 
 uint64
 sys_strace(void)
 {
-  int straceMask;
+  int trace_mask;
 
-  int val = argint(0, &straceMask);
-  if (val < 0)
+  argint(0, &trace_mask);
+  if (trace_mask < 0)
     return -1;
 
   struct proc *p = myproc();
-  p->mask = straceMask;
+  p->mask = trace_mask;
 
   return 0;
 }
 
-
-uint64
-sys_getpid(void)
-{
-  return myproc()->pid;
-}
-
-uint64
-sys_fork(void)
-{
-  // np->mask = p->mask;
-  return fork();
-}
-
-uint64
-sys_wait(void)
-{
-  uint64 p;
-  if(argaddr(0, &p) < 0)
-    return -1;
-  return wait(p);
-}
-
+// waitx
 uint64
 sys_waitx(void)
 {
@@ -83,6 +50,37 @@ sys_waitx(void)
   if (copyout(p->pagetable, addr2,(char*)&rtime, sizeof(int)) < 0)
     return -1;
   return ret;
+}
+
+uint64
+sys_exit(void)
+{
+  int n;
+  if(argint(0, &n) < 0)
+    return -1;
+  exit(n);
+  return 0;  // not reached
+}
+
+uint64
+sys_getpid(void)
+{
+  return myproc()->pid;
+}
+
+uint64
+sys_fork(void)
+{
+  return fork();
+}
+
+uint64
+sys_wait(void)
+{
+  uint64 p;
+  if(argaddr(0, &p) < 0)
+    return -1;
+  return wait(p);
 }
 
 uint64

@@ -164,7 +164,7 @@ clockintr()
 {
   acquire(&tickslock);
   ticks++;
-  increaseRuntime();
+  increaseRuntime(); // waitx
   wakeup(&ticks);
   release(&tickslock);
 }

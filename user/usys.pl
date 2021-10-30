@@ -36,5 +36,5 @@ entry("getpid");
 entry("sbrk");
 entry("sleep");
 entry("uptime");
-entry("waitx");
 entry("strace");
+entry("waitx");

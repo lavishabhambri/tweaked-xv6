@@ -104,8 +104,8 @@ extern uint64 sys_unlink(void);
 extern uint64 sys_wait(void);
 extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
-extern uint64 sys_waitx(void); 
-extern uint64 sys_strace(void); // strace system call
+extern uint64 sys_strace(void);
+extern uint64 sys_waitx(void);
 
 static uint64 (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -129,11 +129,16 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
-[SYS_waitx]   sys_waitx,
 [SYS_strace]   sys_strace,
+[SYS_waitx]   sys_waitx,
 };
 
-static char *syscallNames[] = { "", "fork", "exit", "wait", "pipe", "read", "kill", "exec", "fstat", "chdir", "dup", "getpid", "sbrk", "sleep", "uptime", "open", "write", "mknod", "unlink", "link", "mkdir", "close", "strace"};
+// Needed for strace 
+// Stores the names of system calls
+static char *systemCallsNames[]={"","fork","exit","wait","pipe","read","kill","exec","fstat","chdir","dup","getpid","sbrk","sleep","uptime","open","write","mknod","unlink","link","mkdir","close","trace", "waitx"};
+
+// Stores the number of arguments corresponsing to each system call in the above order of system calls.
+int systemCallArgs[]={0, 0, 1, 1, 1, 3, 1, 2, 2, 1, 1, 0, 1, 1, 0, 2, 3, 3, 1, 2, 1, 1, 1, 3};
 
 void
 syscall(void)
@@ -142,12 +147,22 @@ syscall(void)
   struct proc *p = myproc();
 
   num = p->trapframe->a7;
+  p->storedVal = p->trapframe->a0;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     p->trapframe->a0 = syscalls[num]();
-  
-    if ((1 << num) & p -> mask) {
-      printf("%d: syscall %s -> %d\n", p->pid, syscallNames[num], p->trapframe->a0);
-      // for (int j = 0; j < p->)
+    if((p->mask>>num)&1){
+      printf("%d: syscall %s (", p->pid, systemCallsNames[num]);
+      int numberOfArguments = systemCallArgs[num];
+      if (numberOfArguments > 1)
+        printf("%d ", p->storedVal);
+      else 
+        printf("%d", p->storedVal);
+      for (int i = 1; i < numberOfArguments; i++) {
+        if (i == numberOfArguments - 1) printf("%d", argraw(i));
+        else printf("%d ", argraw(i));
+      }
+
+      printf(") -> %d\n", p->trapframe->a0);
     }
   } else {
     printf("%d %s: unknown sys call %d\n", p->pid, p->name, num);

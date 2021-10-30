@@ -4,7 +4,6 @@
 #define PBS 2
 #define MLFQ 3
 
-
 // Saved registers for kernel context switches.
 struct context {
   uint64 ra;
@@ -113,13 +112,15 @@ struct proc {
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
 
+
+  // Strace
+  int mask;
+  // uint64 storeTrapFrameValues[8];
+
   // These are implemented for the waitx call
   int startTime;               // Start time of the process, i.e. no of clock interrupts that have happened
   int endTime;                 // End time of the process
   int runTime;                 // Run time of the process
-
-
-  // This is needed for the strace command
-  int mask;
+  uint64 storedVal;
 
 };
