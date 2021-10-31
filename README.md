@@ -18,7 +18,7 @@ Round Robin (RR) - The default scheduler of xv6 was Robin Robin, so I just added
 
 If a process voluntarily relinquishes control of the CPU, it leaves the queuing network, and when the process becomes ready again after the I/O, it is inserted at the tail of the same queue, from which it is relinquished earlier. This can be exploited by a process, as just when the time-slice is about to expire, the process can voluntarily relinquish control of the CPU, and get inserted in the same queue again. If it ran as normal, then due to time-slice getting expired, it would have been preempted to a lower priority queue. The process, after exploitation, will remain in the higher priority queue, so that it can run again sooner that it should have.
 
-### Tabulation of the performances of the scheduling algorithms 
+### Tabulation of the performances of the scheduling algorithms (Observed outputs)
 
 1. Round Robin (RR) -
 ```c
@@ -47,7 +47,7 @@ Process 7 finished
 ProPcreoscse ss8  6f ifniniisshehded
 
 Process 9 finished
-Average rtime 51,  wtime 21
+Average rtime 51,  wtime 8
 ```
 
 3. Priority Based Scheduling Policy (PBS) 
@@ -73,6 +73,28 @@ On running the benchmark program provided by the TAs, I got the following result
 2. First Come First Serve Scheduling Policy (FCFS) - On running the time command to run benchmark code, so that it returns the running and waiting time of the whole process, the waiting & running time, which depend on machine to machine, was found to be the least, around 21 ticks & 51 ticks on my machine, which should be expected actually, because identical processes are being created and FCFS does not allow pre-emption. So the extra overhead due to context switches is not there, and therefore, the waiting time is the least.
 
 3. Priority Based Scheduling Policy (PBS) - On running the time command to run benchmark code, so that it returns the running and waiting time of the whole process, the waiting & running time, which depends on machine to machine, was found to be very similar to the Round Robin Policy, around 10 ticks & 113 ticks on my machine, which is very much expected because we are setting the default priority to be 60, and priorities are not being changed in between. Round Robin Policy is applied for processes having equal priorities, which explains the output.
+
+
+**Observations** - 
+The waiting time for the FCFS is the lowest as it does not waste time for choosing the process and directly takes the process having the lowest creation time. The waiting time of FCFS is lesser than the waiting time of PBS due to pre-emption of PBS which causes CPU to lose valuable time by choosing process again and again. Lastly, the waiting time of RR is high due to continuous process change which causes CPU to reduce effeciency.
+
+### Other functionalities
+
+## `waitx`
+This function is a modification of the already existing wait function. It calculates runTime by incrementing it whenever the ticks are incremented and wtime is calculated by 
+```c
+wtime = p->endTime - (p->startTime + p->runTime);
+```
+Here endTime is the exit time of the process, startTime is start time/creation time, runTime is run time.
+
+## `time`
+This is a simple user defined function which can be used to check waitx system call.
+
+## `setpriority`
+This is a system call used to change the priority of processes in case of PBS scheduler.
+
+## `setpriority priority pid`
+This is a user defined function that can be used to set the priority of the processes in PBS scheduler. It uses **setpriority** system call in its implementation.
 
 
 
