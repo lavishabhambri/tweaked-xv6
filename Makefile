@@ -72,17 +72,24 @@ CFLAGS += -fno-pie -nopie
 endif
 
 # Macros for scheduler
-SCHED_MACRO = -D SCHEDULER=RR
-ifeq ($(SCHEDULER), FCFS)
-SCHED_MACRO = -D SCHEDULER=FCFS
+# SCHED_MACRO = -D SCHEDULER=RR
+# ifeq ($(SCHEDULER), FCFS)
+# SCHED_MACRO = -D SCHEDULER=FCFS
+# endif
+# ifeq ($(SCHEDULER), PBS)
+# SCHED_MACRO = -D SCHEDULER=PBS
+# endif
+# ifeq ($(SCHEDULER), MLFQ)
+# SCHED_MACRO = -D SCHEDULER=MLFQ
+# endif
+# CFLAGS += $(SCHED_MACRO)
+
+# SCHEDULER = RR
+ifndef SCHEDULER
+	SCHEDULER:=RR
 endif
-ifeq ($(SCHEDULER), PBS)
-SCHED_MACRO = -D SCHEDULER=PBS
-endif
-ifeq ($(SCHEDULER), MLFQ)
-SCHED_MACRO = -D SCHEDULER=MLFQ
-endif
-CFLAGS += $(SCHED_MACRO)
+
+CFLAGS+="-D $(SCHEDULER)" 
 
 LDFLAGS = -z max-page-size=4096
 

@@ -106,6 +106,7 @@ extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
 extern uint64 sys_strace(void);
 extern uint64 sys_waitx(void);
+extern uint64 sys_setpriority(void);
 
 static uint64 (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,
@@ -131,14 +132,15 @@ static uint64 (*syscalls[])(void) = {
 [SYS_close]   sys_close,
 [SYS_strace]   sys_strace,
 [SYS_waitx]   sys_waitx,
+[SYS_setpriority] sys_setpriority,
 };
 
 // Needed for strace 
 // Stores the names of system calls
-static char *systemCallsNames[]={"","fork","exit","wait","pipe","read","kill","exec","fstat","chdir","dup","getpid","sbrk","sleep","uptime","open","write","mknod","unlink","link","mkdir","close","trace", "waitx"};
+static char *systemCallsNames[]={"","fork","exit","wait","pipe","read","kill","exec","fstat","chdir","dup","getpid","sbrk","sleep","uptime","open","write","mknod","unlink","link","mkdir","close","trace", "waitx", "setpriority"};
 
 // Stores the number of arguments corresponsing to each system call in the above order of system calls.
-int systemCallArgs[]={0, 0, 1, 1, 1, 3, 1, 2, 2, 1, 1, 0, 1, 1, 0, 2, 3, 3, 1, 2, 1, 1, 1, 3};
+int systemCallArgs[]={0, 0, 1, 1, 1, 3, 1, 2, 2, 1, 1, 0, 1, 1, 0, 2, 3, 3, 1, 2, 1, 1, 1, 3, 2};
 
 void
 syscall(void)

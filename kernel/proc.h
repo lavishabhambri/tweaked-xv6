@@ -1,9 +1,3 @@
-// Scheduling algorithms used by scheduler
-#define RR 0
-#define FCFS 1
-#define PBS 2
-#define MLFQ 3
-
 // Saved registers for kernel context switches.
 struct context {
   uint64 ra;
@@ -123,4 +117,16 @@ struct proc {
   int runTime;                 // Run time of the process
   uint64 storedVal;
 
+  // PBS
+  int staticPriority;
+  int dynamicPriority;
+  int sleepTimeStart;
+  int sleepTimeEnd;
+  int niceness;
+
+  // Procdump
+  int n_runs;
+  int ticks[5];
+  int waitTime;
+  int iotime;
 };

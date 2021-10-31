@@ -140,3 +140,16 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+int 
+sys_setpriority(void) {
+  int new_priority;
+  int pid;
+  if (argint(0, &new_priority) < 0) {
+    return -1;
+  }
+
+  if (argint(1, &pid) < 0)
+    return -1;
+  return setpriority(new_priority, pid);
+}
