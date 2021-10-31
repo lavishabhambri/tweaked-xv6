@@ -16,7 +16,7 @@ Round Robin (RR) - The default scheduler of xv6 was Robin Robin, so I just added
 
 ### Possible Exploitation of MLFQ Policy by a Process
 
-If a process voluntarily relinquishes control of the CPU, it leaves the queuing network, and when the process becomes ready again after the I/O, it is inserted at the tail of the same queue, from which it is relinquished earlier. This can be exploited by a process, as just when the time-slice is about to expire, the process can voluntarily relinquish control of the CPU, and get inserted in the same queue again. If it ran as normal, then due to time-slice getting expired, it would have been preempted to a lower priority queue. The process, after exploitation, will remain in the higher priority queue, so that it can run again sooner that it should have.
+If a process voluntarily relinquishes control of the CPU, it leaves the queuing network, and when the process becomes ready again after the I/O, it is inserted at the tail of the same queue, from which it is relinquished earlier. This can be exploited by a coder if the coder adds a short I/O burst having frequency less than the time slice of the queue. Due to this, the process will be removed from the queue and be added back to the same queue (highest priority queue). This will hold the process in the same queue again and again and will get finished with the highest priority in the highest priority queue.
 
 ### Tabulation of the performances of the scheduling algorithms (Observed outputs)
 
